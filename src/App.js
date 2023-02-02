@@ -1,44 +1,96 @@
-
-import { useContext, useReducer } from 'react';
-import './App.css';
-import { BootStarpAccordian } from './BootStarpAccordian';
-import { CounterContext } from './Context/context';
-import { Customer1 } from './Customer1';
-import { Customer2 } from './Customer2';
-import { reducer } from './redcuer';
-
-
-// states and dispatch 
+import { useEffect, useState } from 'react';
+import "./App.css"
+import { Redirect, Route, Switch } from 'react-router-dom';
+import AuthPage from './Components/AuthPage';
+import DashBoard from './Components/DashBoard';
+import NoPage from './Components/NoPage';
+import StudentProfile from './Components/StudentProfile';
+import { StudentDetails } from './Components/Students';
+import WelcomePage from './Components/WelcomePage';
+import AddStudents from './Components/AddStudents';
+import EditStudents from './Components/EditStudents';
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, {products : 30,})
+  // data
+  const [studentsData, setStudents] = useState([]);
+// mounting 
+useEffect(()=>{
+   const getStudents = async () => {
+    try {
+      const response = await fetch("https://63ae58eeceaabafcf177e256.mockapi.io/users", {
+        method:"GET"
+      }); 
+      const data = await response.json();
+      console.log(data);
+      setStudents(data)
+    } catch (error) {
+      console.log("Error Occured")
+    }
+   }; 
+
+   getStudents();
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+
   return (
-    <div>
-      {/* //<BootStarpAccordian/> */}
-      <CounterContext.Provider value={[state, dispatch]}>
-           <Customer1/>
-           <Customer2/>
+    <div className="App">
+       
+   <Switch>
+    
+     <Route exact path = "/">
+     <WelcomePage/>
+     </Route>
       
-           <Admin/>
-      </CounterContext.Provider>
+      <Route path="/dashboard">
+          <DashBoard/>
+      </Route>
+
+      <Route path= "/register">
+        <AuthPage/>
+      </Route>
+
+      <Route path = "/details">
+        <StudentDetails 
+        studentsData={studentsData} 
+        setStudents= {setStudents}/>
+      </Route>
+
+      <Route path = "/students">
+         <Redirect to = "/details"/>
+      </Route>
+
+      <Route path = "/student/:id">
+        <StudentProfile studentsData={studentsData} />
+      </Route>
+
+      
+      <Route path = "/add-data">
+        <AddStudents
+        studentsData={studentsData} 
+        setStudents= {setStudents}
+        />
+      </Route>
+
+      <Route path = "/edit/:id">
+        <EditStudents 
+        studentsData={studentsData}
+        setStudents= {setStudents} />
+      </Route>
+
+      <Route path = "**">
+        <NoPage/>
+      </Route>
+
+
+
+
+   </Switch>
+
+    
+    
+      
     </div>
   );
 }
 
 export default App;
-
-
-
-function Admin () {
-  const [state, dispatch] = useContext(CounterContext)
-  return (
-    <div>
-      <h1>Admin</h1>
-    <button
-    onClick={()=>dispatch({type:"refill-product", quantity:50})}
-    >
-      Re fill
-    </button>
-    </div>
-  )
-}
