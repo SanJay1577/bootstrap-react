@@ -1,4 +1,4 @@
-import {
+import{
   Button,
   Card,
   CardActions,
@@ -41,9 +41,9 @@ if (!localStorage.getItem("user-name")){
     description= "All students details"
     >
     <div className="containers">
-      
+      {studentsData && (
       <div className="card-containers">
-        {studentsData.map((stud, id) => (
+        {studentsData?.map((stud, id) => (
           <Card sx={{ maxWidth: 345 }} key={id} className="card">
             <CardContent>
               <Typography gutterBottom variant="h5" component="div">
@@ -69,6 +69,7 @@ if (!localStorage.getItem("user-name")){
           </Card>
         ))}
       </div>
+      )}
     </div>
     </Base>
   );
