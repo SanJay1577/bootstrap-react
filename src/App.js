@@ -17,14 +17,14 @@ function App() {
 useEffect(()=>{
    const getStudents = async () => {
     try {
-      const response = await fetch("https://63ae58eeceaabafcf177e256.mockapi.io/users", {
+      const response = await fetch("http://localhost:9000/students", {
         method:"GET"
       }); 
       const data = await response.json();
       console.log(data);
-      setStudents(data)
+      setStudents(data.data)
     } catch (error) {
-      console.log("Error Occured")
+      console.log("Error Occured", error)
     }
    }; 
 
@@ -80,10 +80,6 @@ useEffect(()=>{
       <Route path = "**">
         <NoPage/>
       </Route>
-
-
-
-
    </Switch>
 
     
